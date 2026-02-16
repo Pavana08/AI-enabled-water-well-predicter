@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>AI Water Well Predictor - Prediction</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="ground water, machine learning, water quality, prediction, college project" name="keywords">
+    <meta content="Predict groundwater availability with the AI Water Well Predictor" name="description">
+
+    <!-- Favicon -->
+    <link href="/static/img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Stylesheet -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fa;
+            color: #1a1a1a;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            padding: 15px 0;
+        }
+
+        .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0052cc !important;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-link {
+            color: #333333 !important;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 10px 18px;
+            transition: color 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #0052cc !important;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(rgba(0, 82, 204, 0.1), rgba(0, 82, 204, 0.05));
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            color: #4a4a4a;
+        }
+
+        /* Prediction Section */
+        .prediction-section {
+            padding: 80px 0;
+            background: #ffffff;
+        }
+
+        .prediction-section .container {
+            max-width: 1000px;
+        }
+
+        .form-card {
+            background: #f5f7fa;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group label {
+            font-size: 0.95rem;
+            color: #1a1a1a;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .form-control {
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #0052cc;
+            box-shadow: 0 0 0 0.2rem rgba(0, 82, 204, 0.25);
+            outline: none;
+        }
+
+        .btn-primary {
+            background: #0052cc;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            border-radius: 6px;
+            transition: background 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .btn-primary:hover {
+            background: #003d99;
+            transform: translateY(-2px);
+        }
+
+        .prediction-result {
+            background: #0052cc;
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .prediction-result h4 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .prediction-result p {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 60px 0;
+            }
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+            .prediction-section {
+                padding: 60px 0;
+            }
+            .form-card {
+                padding: 20px;
+            }
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+            .nav-link {
+                font-size: 0.9rem;
+                padding: 8px 12px;
+            }
+            .form-group {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{url_for('index')}}">AI Well Predictor</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto">
+                    <a href="{{url_for('upload')}}" class="nav-item nav-link"><i class="fas fa-upload me-2"></i>Upload</a>
+                    <a href="{{url_for('algo')}}" class="nav-item nav-link"><i class="fas fa-cogs me-2"></i>Model Eval</a>
+                    <a href="{{url_for('prediction')}}" class="nav-item nav-link active"><i class="fas fa-water me-2"></i>Prediction</a>
+                    <a href="{{url_for('index')}}" class="nav-item nav-link"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Navbar End -->
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1>Ground Water Prediction</h1>
+            <p>Harnessing Data for Sustainable Water Management</p>
+        </div>
+    </div>
+
+    <!-- Prediction Section -->
+    <section class="prediction-section">
+        <div class="container">
+            <div class="form-card">
+                <form action="{{url_for('prediction')}}" method="POST">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="state">State</label>
+                                <select id="state" name="state" class="form-control" required>
+                                    <option value="" disabled selected>Select State</option>
+                                    <option value="A&N ISLAND">A&N ISLAND</option>
+                                    <option value="ANDHRA PRADESH">ANDHRA PRADESH</option>
+                                    <option value="ARUNACHAL PRADESH">ARUNACHAL PRADESH</option>
+                                    <option value="ASSAM">ASSAM</option>
+                                    <option value="BIHAR">BIHAR</option>
+                                    <option value="CHANDIGARH">CHANDIGARH</option>
+                                    <option value="CHATTISGARH">CHATTISGARH</option>
+                                    <option value="DELHI">DELHI</option>
+                                    <option value="Dadra & Nagar Haveli">Dadra & Nagar Haveli</option>
+                                    <option value="DAMAN">DAMAN</option>
+                                    <option value="DIU">DIU</option>
+                                    <option value="GOA">GOA</option>
+                                    <option value="GUJARAT">GUJARAT</option>
+                                    <option value="HARYANA">HARYANA</option>
+                                    <option value="HIMACHAL">HIMACHAL</option>
+                                    <option value="J&K">J&K</option>
+                                    <option value="JHARKHAND">JHARKHAND</option>
+                                    <option value="KARNATAKA">KARNATAKA</option>
+                                    <option value="KERALA">KERALA</option>
+                                    <option value="LAKSHADWEEP">LAKSHADWEEP</option>
+                                    <option value="MADHYAPRADESH">MADHYAPRADESH</option>
+                                    <option value="MAHARASHTRA">MAHARASHTRA</option>
+                                    <option value="MANIPUR">MANIPUR</option>
+                                    <option value="MEGHALAYA">MEGHALAYA</option>
+                                    <option value="MIZORAM">MIZORAM</option>
+                                    <option value="NAGALAND">NAGALAND</option>
+                                    <option value="ODISHA">ODISHA</option>
+                                    <option value="PUNJAB">PUNJAB</option>
+                                    <option value="Puducherry">Puducherry</option>
+                                    <option value="RAJASTHAN">RAJASTHAN</option>
+                                    <option value="SIKKIM">SIKKIM</option>
+                                    <option value="TAMILNADU">TAMILNADU</option>
+                                    <option value="TELANGANA">TELANGANA</option>
+                                    <option value="TRIPURA">TRIPURA</option>
+                                    <option value="UTTARAKHAND">UTTARAKHAND</option>
+                                    <option value="UTTARPRADESH">UTTARPRADESH</option>
+                                    <option value="WEST BENGAL">WEST BENGAL</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="district">District</label>
+                                <select id="district" name="district" class="form-control" required>
+                                    <option value="" disabled selected>Select District</option>
+                                    <option value="Adilabad">Adilabad</option>
+                                    <option value="Agar">Agar</option>
+                                    <option value="Agatti">Agatti</option>
+                                    <option value="Agra">Agra</option>
+                                    <option value="Ahmedabad">Ahmedabad</option>
+                                    <option value="Ahmednagar">Ahmednagar</option>
+                                    <option value="Aizawl">Aizawl</option>
+                                    <option value="Ajmer">Ajmer</option>
+                                    <option value="Akola">Akola</option>
+                                    <option value="Alappuzha">Alappuzha</option>
+                                    <option value="Aligarh">Aligarh</option>
+                                    <option value="Alirajpur">Alirajpur</option>
+                                    <option value="Alwar">Alwar</option>
+                                    <option value="Ambala">Ambala</option>
+                                    <option value="Ambedkar Nagar">Ambedkar Nagar</option>
+                                    <option value="Amethi">Amethi</option>
+                                    <option value="Amini">Amini</option>
+                                    <option value="Amravati">Amravati</option>
+                                    <option value="Amreli">Amreli</option>
+                                    <option value="Amritsar">Amritsar</option>
+                                    <option value="Amroha">Amroha</option>
+                                    <option value="Anand">Anand</option>
+                                    <option value="Anantapur">Anantapur</option>
+                                    <option value="Anantnag">Anantnag</option>
+                                    <option value="Androth">Androth</option>
+                                    <option value="Angul">Angul</option>
+                                    <option value="Anjaw">Anjaw</option>
+                                    <option value="Anuppur">Anuppur</option>
+                                    <option value="Araria">Araria</option>
+                                    <option value="Ariyalur">Ariyalur</option>
+                                    <option value="Arvalli">Arvalli</option>
+                                    <option value="Arwal">Arwal</option>
+                                    <option value="Ashoknagar">Ashoknagar</option>
+                                    <option value="Auraiya">Auraiya</option>
+                                    <option value="Aurangabad">Aurangabad</option>
+                                    <option value="Ayodhya">Ayodhya</option>
+                                    <option value="Azamgarh">Azamgarh</option>
+                                    <option value="Bagalkote">Bagalkote</option>
+                                    <option value="Bagpat">Bagpat</option>
+                                    <option value="Bahraich">Bahraich</option>
+                                    <option value="Baksa">Baksa</option>
+                                    <option value="Balaghat">Balaghat</option>
+                                    <option value="Balasore">Balasore</option>
+                                    <option value="Balh">Balh</option>
+                                    <option value="Ballari">Ballari</option>
+                                    <option value="Ballia">Ballia</option>
+                                    <option value="Balod">Balod</option>
+                                    <option value="Baloda Bazar">Baloda Bazar</option>
+                                    <option value="Balrampur">Balrampur</option>
+                                    <option value="Banaskantha">Banaskantha</option>
+                                    <option value="Banda">Banda</option>
+                                    <option value="Bandipora">Bandipora</option>
+                                    <option value="Banka">Banka</option>
+                                    <option value="Bankura">Bankura</option>
+                                    <option value="Banswara">Banswara</option>
+                                    <option value="Barabanki">Barabanki</option>
+                                    <option value="Baramulla">Baramulla</option>
+                                    <option value="Baran">Baran</option>
+                                    <option value="Bareilly">Bareilly</option>
+                                    <option value="Bargarh">Bargarh</option>
+                                    <option value="Barmer">Barmer</option>
+                                    <option value="Barnala">Barnala</option>
+                                    <option value="Barpeta">Barpeta</option>
+                                    <option value="Barwani">Barwani</option>
+                                    <option value="Bastar">Bastar</option>
+                                    <option value="Basti">Basti</option>
+                                    <option value="Bathinda">Bathinda</option>
+                                    <option value="Beed">Beed</option>
+                                    <option value="Begusarai">Begusarai</option>
+                                    <option value="Belagavi">Belagavi</option>
+                                    <option value="Bemetara">Bemetara</option>
+                                    <option value="Bengaluru Rural">Bengaluru Rural</option>
+                                    <option value="Bengaluru Urban">Bengaluru Urban</option>
+                                    <option value="Betul">Betul</option>
+                                    <option value="Bhabhua">Bhabhua</option>
+                                    <option value="Bhadradri Kothagudem">Bhadradri Kothagudem</option>
+                                    <option value="Bhadrak">Bhadrak</option>
+                                    <option value="Bhagalpur">Bhagalpur</option>
+                                    <option value="Bhandara">Bhandara</option>
+                                    <option value="Bharatpur">Bharatpur</option>
+                                    <option value="Bharuch">Bharuch</option>
+                                    <option value="Bhavnagar">Bhavnagar</option>
+                                    <option value="Bhilwara">Bhilwara</option>
+                                    <option value="Bhind">Bhind</option>
+                                    <option value="Bhiwani">Bhiwani</option>
+                                    <option value="Bhojpur">Bhojpur</option>
+                                    <option value="Bhopal">Bhopal</option>
+                                    <option value="Bidar">Bidar</option>
+                                    <option value="Bijapur">Bijapur</option>
+                                    <option value="Bijnor">Bijnor</option>
+                                    <option value="Bikaner">Bikaner</option>
+                                    <option value="Bilaspur">Bilaspur</option>
+                                    <option value="Birbhum">Birbhum</option>
+                                    <option value="Bishnupur">Bishnupur</option>
+                                    <option value="Bokaro">Bokaro</option>
+                                    <option value="Bolangir">Bolangir</option>
+                                    <option value="Bongaigaon">Bongaigaon</option>
+                                    <option value="Botad">Botad</option>
+                                    <option value="Boudh">Boudh</option>
+                                    <option value="Budaun">Budaun</option>
+                                    <option value="Budgam">Budgam</option>
+                                    <option value="Bulandshahar">Bulandshahar</option>
+                                    <option value="Buldhana">Buldhana</option>
+                                    <option value="Bundi">Bundi</option>
+                                    <option value="Burdwan">Burdwan</option>
+                                    <option value="Burhanpur">Burhanpur</option>
+                                    <option value="Buxar">Buxar</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="rainfall_monsoon">Rainfall Recharge (Monsoon)</label>
+                                <input type="number" step="0.01" id="rainfall_monsoon" name="rainfall_monsoon" 
+                                       class="form-control" placeholder="Enter value" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="other_sources_monsoon">Other Sources (Monsoon)</label>
+                                <input type="number" step="0.01" id="other_sources_monsoon" name="other_sources_monsoon" 
+                                       class="form-control" placeholder="Enter value" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="rainfall_non_monsoon">Rainfall Recharge (Non-Monsoon)</label>
+                                <input type="number" step="0.01" id="rainfall_non_monsoon" name="rainfall_non_monsoon" 
+                                       class="form-control" placeholder="Enter value" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="other_sources_non_monsoon">Other Sources (Non-Monsoon)</label>
+                                <input type="number" step="0.01" id="other_sources_non_monsoon" name="other_sources_non_monsoon" 
+                                       class="form-control" placeholder="Enter value" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="total_annual_recharge">Total Annual Recharge</label>
+                                <input type="number" step="0.01" id="total_annual_recharge" name="total_annual_recharge" 
+                                       class="form-control" placeholder="Enter value" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="total_natural_discharge">Natural Discharge</label>
+                                <input type="number" step="0.01" id="total_natural_discharge" name="total_natural_discharge" 
+                                       class="form-control" placeholder="Enter value" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="extractable_gw">Extractable GW Resource</label>
+                                <input type="number" step="0.01" id="extractable_gw" name="extractable_gw" 
+                                       class="form-control" placeholder="Enter value" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="current_annual_extraction_irrigation">Extraction (Irrigation)</label>
+                                <input type="number" step="0.01" id="current_annual_extraction_irrigation" 
+                                       name="current_annual_extraction_irrigation" class="form-control" 
+                                       placeholder="Enter value" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="current_annual_extraction_domestic">Extraction (Domestic)</label>
+                                <input type="number" step="0.01" id="current_annual_extraction_domestic" 
+                                       name="current_annual_extraction_domestic" class="form-control" 
+                                       placeholder="Enter value" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Total_Current_Annual_Ground_Water_Extraction">Total Extraction</label>
+                                <input type="number" step="0.01" id="Total_Current_Annual_Ground_Water_Extraction" 
+                                       name="Total_Current_Annual_Ground_Water_Extraction" class="form-control" 
+                                       placeholder="Enter value" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="stage_of_gw_extraction">Extraction Stage (%)</label>
+                                <input type="number" step="0.01" id="stage_of_gw_extraction" name="stage_of_gw_extraction" 
+                                       class="form-control" placeholder="Enter percentage" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="annual_gw_allocation_domestic">GW Allocation 2025 (Domestic)</label>
+                                <input type="number" step="0.01" id="annual_gw_allocation_domestic" 
+                                       name="annual_gw_allocation_domestic" class="form-control" 
+                                       placeholder="Enter value" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-water me-2"></i>Predict Now
+                        </button>
+                    </div>
+                </form>
+
+                {% if prediction %}
+                <div class="prediction-result">
+                    <h4><i class="fas fa-tint me-2"></i>Predicted Future Net Ground Water Availability</h4>
+                    <p class="display-6 mb-0">{{ prediction }} m³/year</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 AI Water Well Predictor - College Project. All rights reserved.</p>
+            <p>Contact: <a href="mailto:project@college.edu">project@college.edu</a></p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Smooth scroll animation for sections
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.prediction-section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            sections.forEach(section => {
+                section.style.opacity = 0;
+                section.style.transform = 'translateY(30px)';
+                section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+
+</html>
